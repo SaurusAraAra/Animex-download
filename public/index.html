@@ -2,536 +2,533 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Animex — Download APK</title>
-<meta name="description" content="Download Animex APK gratis. Aplikasi streaming anime terbaik dengan ribuan judul lengkap.">
-<meta property="og:title" content="Animex — Download APK">
-<meta property="og:description" content="Streaming anime favorit kamu kapan saja, di mana saja. Download sekarang, gratis!">
-<meta property="og:image" content="https://raw.githubusercontent.com/SaurusAraAra/animex-app/main/banner.png">
-<meta name="theme-color" content="#6c63ff">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Animex — Watch Anime</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
-/* ── RESET ─────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #08080f;
-  --surface: #0f0f1a;
-  --card: #131320;
-  --border: #1e1e35;
-  --border2: #252540;
-  --t: #f0f0ff;
-  --t2: #9090b8;
-  --m: #404060;
-  --p: #6c63ff;
-  --p2: #8b85ff;
-  --p3: #b8b4ff;
-  --accent: #ff6b9d;
-  --accent2: #ff4d8d;
-  --green: #34d399;
-  --blue: #38bdf8;
-}
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--t);
-  min-height: 100vh;
-  overflow-x: hidden;
+  --red: #c0392b;
+  --red-bright: #e74c3c;
+  --red-dim: rgba(192, 57, 43, 0.15);
+  --bg: #080808;
+  --bg2: #0f0f0f;
+  --bg3: #161616;
+  --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.06);
+  --border-red: rgba(192,57,43,0.3);
+  --text: #f0f0f0;
+  --text-muted: #666;
+  --text-soft: #999;
+  --radius: 16px;
+  --radius-sm: 10px;
 }
 
-/* ── LOADER ────────────────────────────────────────── */
-#loader {
-  position: fixed; inset: 0; z-index: 9999;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
   background: var(--bg);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 20px;
-  transition: opacity .6s ease, visibility .6s ease;
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
-#loader.hide { opacity: 0; visibility: hidden; }
+
+/* ── SUBTLE BACKGROUND TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(192,57,43,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 80% 90%, rgba(192,57,43,0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── LOADER ── */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+#loader.hide {
+  opacity: 0;
+  visibility: hidden;
+}
 .loader-ring {
-  width: 52px; height: 52px; border-radius: 50%;
-  border: 3px solid var(--border2);
-  border-top-color: var(--p);
-  border-right-color: var(--accent);
-  animation: spin 1s linear infinite;
+  width: 44px;
+  height: 44px;
+  border: 2px solid rgba(192,57,43,0.15);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+.loader-text {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loader-text {
-  font-size: .72rem; font-weight: 600; letter-spacing: 3px;
-  text-transform: uppercase; color: var(--m);
-}
-.loader-dots span {
-  display: inline-block; width: 5px; height: 5px; border-radius: 50%;
-  background: var(--p); margin: 0 2px;
-  animation: dotBounce 1s ease-in-out infinite;
-}
-.loader-dots span:nth-child(2) { animation-delay: .15s; background: var(--accent); }
-.loader-dots span:nth-child(3) { animation-delay: .3s; background: var(--green); }
-@keyframes dotBounce { 0%,80%,100% { transform: scale(.6); opacity:.4; } 40% { transform: scale(1); opacity:1; } }
 
-/* ── BG FX ─────────────────────────────────────────── */
-.bg-fx {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+/* ── MAIN WRAPPER ── */
+.page {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  padding: 20px 16px 40px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
-.orb {
-  position: absolute; border-radius: 50%; filter: blur(120px); opacity: .55;
-  animation: orbFloat 18s ease-in-out infinite;
-}
-.orb-1 { width: 600px; height: 600px; background: rgba(108,99,255,.15); top: -200px; left: -150px; }
-.orb-2 { width: 500px; height: 500px; background: rgba(255,107,157,.1); bottom: -150px; right: -100px; animation-delay: -9s; animation-duration: 22s; }
-.orb-3 { width: 300px; height: 300px; background: rgba(52,211,153,.06); top: 40%; left: 50%; animation-delay: -5s; animation-duration: 14s; }
-@keyframes orbFloat {
-  0%,100% { transform: translate(0,0) scale(1); }
-  33% { transform: translate(40px,-30px) scale(1.05); }
-  66% { transform: translate(-20px,40px) scale(.95); }
-}
-.grid-bg {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(108,99,255,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(108,99,255,.03) 1px, transparent 1px);
-  background-size: 50px 50px;
+.page.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* ── WRAP ──────────────────────────────────────────── */
-.wrap {
-  position: relative; z-index: 1;
-  max-width: 480px; margin: 0 auto; padding: 24px 16px 80px;
-  animation: fadeUp .7s .3s ease both;
-}
-@keyframes fadeUp { from { opacity:0; transform: translateY(24px); } to { opacity:1; transform: translateY(0); } }
-
-/* ── TOPBAR ────────────────────────────────────────── */
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 32px;
-}
-.logo-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(108,99,255,.1); border: 1px solid rgba(108,99,255,.25);
-  border-radius: 99px; padding: 6px 14px;
-  font-size: .68rem; font-weight: 700; letter-spacing: 1.5px; color: var(--p3);
-  text-transform: uppercase;
-}
-.logo-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: blink 1.2s steps(1) infinite; }
-@keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
-.ver-pill {
-  font-size: .64rem; font-weight: 600; letter-spacing: .5px;
-  background: rgba(52,211,153,.1); border: 1px solid rgba(52,211,153,.25);
-  color: var(--green); border-radius: 99px; padding: 4px 12px;
-}
-
-/* ── HERO ──────────────────────────────────────────── */
-.hero { text-align: center; margin-bottom: 28px; }
-.app-icon-wrap {
-  position: relative; display: inline-block; margin-bottom: 20px;
+/* ── APP HEADER ── */
+.app-header {
+  text-align: center;
+  margin-bottom: 28px;
 }
 .app-icon {
-  width: 96px; height: 96px; border-radius: 24px;
-  background: linear-gradient(135deg, #6c63ff, #ff6b9d);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.8rem;
-  box-shadow: 0 20px 60px rgba(108,99,255,.35), 0 0 0 1px rgba(255,255,255,.06);
-  position: relative; overflow: hidden;
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  overflow: hidden;
 }
-.app-icon::before {
-  content: ''; position: absolute; top: -40%; left: -40%;
-  width: 80%; height: 80%; background: rgba(255,255,255,.15);
-  border-radius: 50%; pointer-events: none;
-}
-.icon-badge {
-  position: absolute; bottom: -4px; right: -4px;
-  width: 28px; height: 28px; background: var(--green);
-  border-radius: 50%; border: 2px solid var(--bg);
-  display: flex; align-items: center; justify-content: center;
-  font-size: .75rem;
+.app-icon svg {
+  width: 48px;
+  height: 48px;
 }
 .app-name {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 2.4rem; font-weight: 700; letter-spacing: -1px;
-  background: linear-gradient(135deg, #fff 30%, var(--p3));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  margin-bottom: 6px;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text);
 }
-.app-tagline { font-size: .82rem; color: var(--t2); line-height: 1.6; max-width: 280px; margin: 0 auto; }
-
-/* ── RATING ────────────────────────────────────────── */
-.rating-row {
-  display: flex; align-items: center; justify-content: center;
-  gap: 6px; margin-top: 14px; margin-bottom: 4px;
+.app-tagline {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 400;
 }
-.stars { color: #fbbf24; font-size: .9rem; letter-spacing: 1px; }
-.rating-num { font-size: .8rem; font-weight: 700; color: var(--t); }
-.rating-cnt { font-size: .7rem; color: var(--m); }
 
-/* ── INFO CARD ─────────────────────────────────────── */
-.info-card {
-  background: var(--card);
+/* ── CARD ── */
+.card {
+  background: var(--bg2);
   border: 1px solid var(--border);
-  border-radius: 20px; padding: 20px;
-  margin-bottom: 16px;
-  position: relative; overflow: hidden;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
 }
-.info-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(108,99,255,.4), rgba(255,107,157,.4), transparent);
+.card:hover {
+  border-color: var(--border-red);
 }
-.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.info-item {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; padding: 14px 12px;
-  display: flex; flex-direction: column; gap: 4px;
-}
-.info-label { font-size: .6rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--m); }
-.info-val { font-size: .88rem; font-weight: 700; color: var(--t); font-variant-numeric: tabular-nums; }
-.info-val.purple { color: var(--p2); }
-.info-val.green { color: var(--green); }
-.info-val.pink { color: var(--accent); }
-.info-val.blue { color: var(--blue); }
 
-/* ── DOWNLOAD BUTTONS ──────────────────────────────── */
-.btn-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+/* ── INFO ROWS ── */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.info-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  transition: border-color 0.2s;
+}
+.info-item:hover { border-color: var(--border-red); }
+.info-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+.info-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ── BADGE ── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(192,57,43,0.1);
+  border: 1px solid var(--border-red);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--red-bright);
+  margin-bottom: 20px;
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--red-bright);
+  border-radius: 50%;
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ── SCREENSHOTS ── */
+.screenshots-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+#desc {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#desc img {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  display: block;
+  transition: border-color 0.2s;
+}
+#desc img:hover { border-color: var(--border-red); }
+#desc .bold {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-soft);
+  padding: 4px 0;
+}
+#desc .text {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+
+/* ── BUTTONS ── */
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 20px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-family: 'Outfit', sans-serif;
+}
 
 .btn-primary {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  padding: 18px 24px; border-radius: 16px;
-  background: linear-gradient(135deg, var(--p), #a855f7);
-  color: #fff; font-weight: 700; font-size: 1rem;
-  text-decoration: none; letter-spacing: .3px;
-  position: relative; overflow: hidden;
-  box-shadow: 0 12px 36px rgba(108,99,255,.4);
-  transition: all .25s;
+  background: var(--red);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(192,57,43,0.25);
 }
-.btn-primary::before {
-  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
-  transition: .5s;
+.btn-primary:hover {
+  background: var(--red-bright);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(192,57,43,0.4);
 }
-.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 18px 48px rgba(108,99,255,.55); }
-.btn-primary:hover::before { left: 100%; }
 .btn-primary:active { transform: translateY(0); }
 
 .btn-secondary {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  padding: 15px 24px; border-radius: 14px;
-  background: var(--card); border: 1px solid var(--border2);
-  color: var(--t2); font-weight: 600; font-size: .88rem;
-  text-decoration: none; letter-spacing: .2px;
-  transition: all .2s;
-}
-.btn-secondary:hover { border-color: rgba(108,99,255,.4); color: var(--t); background: rgba(108,99,255,.06); transform: translateY(-1px); }
-.btn-secondary .source-icon { font-size: 1.1rem; }
-
-/* ── FEATURES ──────────────────────────────────────── */
-.features-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 20px; padding: 20px; margin-bottom: 16px;
-}
-.features-title {
-  font-size: .72rem; font-weight: 700; letter-spacing: 1.5px;
-  text-transform: uppercase; color: var(--m); margin-bottom: 14px;
-  display: flex; align-items: center; gap: 8px;
-}
-.features-title::before { content: ''; display: block; width: 3px; height: 12px; background: linear-gradient(var(--p), var(--accent)); border-radius: 2px; }
-.feat-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.feat-item {
-  display: flex; align-items: center; gap: 8px;
-  font-size: .74rem; color: var(--t2);
-}
-.feat-icon {
-  width: 28px; height: 28px; border-radius: 8px;
-  background: rgba(108,99,255,.1); border: 1px solid rgba(108,99,255,.15);
-  display: flex; align-items: center; justify-content: center;
-  font-size: .8rem; flex-shrink: 0;
-}
-
-/* ── SCREENSHOTS ───────────────────────────────────── */
-.screenshots-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 20px; padding: 20px; margin-bottom: 16px;
-}
-.screenshots-inner { display: flex; flex-direction: column; gap: 12px; }
-.ss-img {
-  width: 100%; height: auto; border-radius: 12px;
+  background: var(--surface);
+  color: var(--text-soft);
   border: 1px solid var(--border);
-  box-shadow: 0 8px 24px rgba(0,0,0,.4);
-  transition: transform .3s, box-shadow .3s;
 }
-.ss-img:hover { transform: scale(1.02); box-shadow: 0 12px 32px rgba(108,99,255,.2); }
-
-/* ── CHANGELOG ─────────────────────────────────────── */
-.changelog-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 20px; padding: 20px; margin-bottom: 16px;
+.btn-secondary:hover {
+  border-color: var(--border-red);
+  color: var(--text);
+  background: rgba(192,57,43,0.06);
 }
-.changelog-body { font-size: .78rem; color: var(--t2); line-height: 1.8; white-space: pre-wrap; word-break: break-word; }
-.changelog-body .bold { font-weight: 700; color: var(--t); margin: 8px 0 4px; }
-.changelog-body .text { color: var(--t2); }
 
-/* ── FOOTER ────────────────────────────────────────── */
-.footer {
-  text-align: center; padding: 32px 0 0;
+.btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ── DEVICE SPECIFIC DOWNLOAD ── */
+.device-banner {
+  display: none;
+  background: rgba(192,57,43,0.06);
+  border: 1px solid var(--border-red);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text-soft);
+  margin-bottom: 12px;
+  align-items: center;
+  gap: 10px;
+}
+.device-banner.show { display: flex; }
+.device-banner svg { width: 16px; height: 16px; color: var(--red-bright); flex-shrink: 0; }
+
+/* ── FOOTER ── */
+footer {
+  margin-top: 32px;
+  padding-top: 20px;
   border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
-.footer-logo {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.1rem; font-weight: 700; letter-spacing: -0.5px;
-  background: linear-gradient(135deg, var(--p3), var(--accent));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  margin-bottom: 10px;
+.footer-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
-.footer-links { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-.footer-link {
-  color: var(--m); font-size: .68rem; text-decoration: none;
-  padding: 5px 12px; border-radius: 99px; border: 1px solid var(--border);
-  transition: all .2s;
+.footer-links a {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  letter-spacing: 0.3px;
 }
-.footer-link:hover { color: var(--t2); border-color: var(--border2); }
-.footer-sep { color: var(--border2); font-size: .6rem; }
-.footer-copy { font-size: .62rem; color: var(--m); margin-top: 10px; }
+.footer-links a:hover { color: var(--red-bright); }
+.footer-copy {
+  font-size: 11px;
+  color: #3a3a3a;
+  letter-spacing: 0.5px;
+}
 
-/* ── TOAST ─────────────────────────────────────────── */
-.toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: var(--card); border: 1px solid var(--border2);
-  padding: 10px 20px; border-radius: 99px;
-  font-size: .74rem; font-weight: 600; color: var(--t);
-  display: flex; align-items: center; gap: 6px;
-  opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 999;
-  white-space: nowrap;
+/* ── DESKTOP LAYOUT ── */
+@media (min-width: 700px) {
+  .page {
+    max-width: 860px;
+    padding: 40px 24px 60px;
+  }
+  .app-header {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .app-icon {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  .page-body {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+    align-items: start;
+  }
+  .col-left { min-width: 0; }
+  .col-right { position: sticky; top: 20px; }
+  .info-grid { grid-template-columns: repeat(3, 1fr); }
+  footer { flex-direction: row; justify-content: space-between; }
 }
-.toast.show { opacity: 1; }
 
-/* ── SKELETON ──────────────────────────────────────── */
-@keyframes shimmer {
-  0% { background-position: -300px 0; }
-  100% { background-position: 300px 0; }
-}
-.skeleton {
-  background: linear-gradient(90deg, var(--border) 25%, var(--border2) 50%, var(--border) 75%);
-  background-size: 600px 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 6px; display: inline-block;
+/* ── iOS STANDALONE ── */
+@media (display-mode: standalone) {
+  body { padding-top: env(safe-area-inset-top); }
 }
 </style>
 </head>
 <body>
 
-<!-- LOADER -->
+<!-- Loader -->
 <div id="loader">
   <div class="loader-ring"></div>
-  <div class="loader-dots">
-    <span></span><span></span><span></span>
-  </div>
-  <div class="loader-text">Loading Animex</div>
+  <div class="loader-text">Loading</div>
 </div>
 
-<!-- BG FX -->
-<div class="bg-fx">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-</div>
-<div class="grid-bg"></div>
+<div class="page" id="page">
 
-<!-- MAIN -->
-<div class="wrap">
-
-  <!-- Topbar -->
-  <div class="topbar">
-    <div class="logo-badge"><div class="logo-dot"></div>Animex</div>
-    <div class="ver-pill" id="ver-pill">v—</div>
-  </div>
-
-  <!-- Hero -->
-  <div class="hero">
-    <div class="app-icon-wrap">
-      <div class="app-icon">🎌</div>
-      <div class="icon-badge">✓</div>
+  <!-- App Header -->
+  <div class="app-header">
+    <div class="app-icon">
+      <!-- Animex icon: play + stream lines -->
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" rx="10" fill="#161616"/>
+        <circle cx="24" cy="24" r="14" stroke="#c0392b" stroke-width="1.5" fill="none" opacity="0.4"/>
+        <path d="M21 18.5L31 24L21 29.5V18.5Z" fill="#c0392b"/>
+        <path d="M6 8h4M6 12h2M6 16h3" stroke="#c0392b" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+        <path d="M42 32h-4M42 36h-2M42 40h-3" stroke="#c0392b" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+      </svg>
     </div>
-    <div class="app-name">ANIMEX</div>
-    <p class="app-tagline">Streaming anime favorit kamu kapan saja, di mana saja. Gratis, cepat, dan lengkap.</p>
-    <div class="rating-row">
-      <span class="stars">★★★★★</span>
-      <span class="rating-num">5.0</span>
-      <span class="rating-cnt">· Anime App</span>
+    <div>
+      <div class="app-name">Animex</div>
+      <div class="app-tagline">Stream anime, anywhere.</div>
     </div>
   </div>
 
-  <!-- Info Grid -->
-  <div class="info-card">
-    <div class="info-grid">
-      <div class="info-item">
-        <span class="info-label">Version</span>
-        <span class="info-val purple" id="info-version">
-          <span class="skeleton" style="width:60px;height:14px"> </span>
+  <!-- Page Body -->
+  <div class="page-body">
+    <div class="col-left">
+
+      <!-- Status Badge -->
+      <div style="margin-bottom:20px">
+        <span class="status-badge">
+          <span class="status-dot"></span>
+          <span id="update-label">Checking updates...</span>
         </span>
       </div>
-      <div class="info-item">
-        <span class="info-label">File Size</span>
-        <span class="info-val green" id="info-size">
-          <span class="skeleton" style="width:50px;height:14px"> </span>
-        </span>
+
+      <!-- Info -->
+      <div class="card">
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">Version</div>
+            <div class="info-value" id="version">—</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Size</div>
+            <div class="info-value" id="size">—</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Platform</div>
+            <div class="info-value">Android</div>
+          </div>
+        </div>
       </div>
-      <div class="info-item">
-        <span class="info-label">Platform</span>
-        <span class="info-val blue">Android</span>
+
+      <!-- Description / Screenshots -->
+      <div class="card" id="desc-card" style="display:none">
+        <div class="screenshots-label">About</div>
+        <div id="desc"></div>
       </div>
-      <div class="info-item">
-        <span class="info-label">Downloads</span>
-        <span class="info-val pink" id="info-dl">
-          <span class="skeleton" style="width:40px;height:14px"> </span>
-        </span>
+
+    </div>
+
+    <div class="col-right">
+
+      <!-- Device banner -->
+      <div class="device-banner" id="device-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+        </svg>
+        <span id="device-msg"></span>
       </div>
+
+      <!-- Buttons -->
+      <div class="btn-group">
+        <a href="/api/download" class="btn btn-primary" id="btn-direct">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download APK
+        </a>
+        <a href="https://apkpure.com/p/com.animex.saurusgege" target="_blank" rel="noopener" class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          Download via APKPure
+        </a>
+      </div>
+
+      <!-- Footer -->
+      <footer>
+        <div class="footer-links">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/privacy">Terms of Use</a>
+          <a href="mailto:support@animex.app">Contact</a>
+        </div>
+        <div class="footer-copy">&copy; 2025 Animex. All rights reserved.</div>
+      </footer>
+
     </div>
-  </div>
-
-  <!-- Download Buttons -->
-  <div class="btn-group">
-    <a href="/api/download" class="btn-primary" id="btn-direct">
-      <span>⬇️</span>
-      <span>Download APK · GitHub</span>
-    </a>
-    <a href="https://apkpure.com/p/com.animex.saurusgege" target="_blank" class="btn-secondary">
-      <span class="source-icon">📦</span>
-      <span>Download via APKPure</span>
-      <span style="margin-left:auto;font-size:.65rem;opacity:.5">↗</span>
-    </a>
-  </div>
-
-  <!-- Features -->
-  <div class="features-card">
-    <div class="features-title">Fitur Unggulan</div>
-    <div class="feat-list">
-      <div class="feat-item"><div class="feat-icon">🎬</div>Streaming HD</div>
-      <div class="feat-item"><div class="feat-icon">📥</div>Download Offline</div>
-      <div class="feat-item"><div class="feat-icon">🔍</div>Search Cepat</div>
-      <div class="feat-item"><div class="feat-icon">📱</div>UI Modern</div>
-      <div class="feat-item"><div class="feat-icon">🌙</div>Dark Mode</div>
-      <div class="feat-item"><div class="feat-icon">🆓</div>Gratis & Bebas</div>
-    </div>
-  </div>
-
-  <!-- Screenshots / Changelog -->
-  <div id="screenshots-card" class="screenshots-card" style="display:none">
-    <div class="features-title">Preview</div>
-    <div class="screenshots-inner" id="screenshots-inner"></div>
-  </div>
-
-  <div class="changelog-card" id="changelog-card" style="display:none">
-    <div class="features-title">What's New</div>
-    <div class="changelog-body" id="changelog-body"></div>
-  </div>
-
-  <!-- Footer -->
-  <div class="footer">
-    <div class="footer-logo">Animex</div>
-    <div class="footer-links">
-      <a href="/privacy" class="footer-link">🔒 Privacy Policy</a>
-      <span class="footer-sep">·</span>
-      <a href="/terms" class="footer-link">📄 Terms of Use</a>
-      <span class="footer-sep">·</span>
-      <a href="https://apkpure.com/p/com.animex.saurusgege" target="_blank" class="footer-link">📦 APKPure</a>
-    </div>
-    <div class="footer-copy">© 2024 Animex · Built with ❤️ · Free Anime App</div>
   </div>
 
 </div>
-
-<!-- Toast -->
-<div class="toast" id="toast">📋 Link disalin!</div>
 
 <script>
-// Loader
+// Device detection
+const ua = navigator.userAgent;
+const isIOS = /iphone|ipad|ipod/i.test(ua);
+const isAndroid = /android/i.test(ua);
+const isDesktop = !isIOS && !isAndroid;
+
+const banner = document.getElementById('device-banner');
+const msg = document.getElementById('device-msg');
+
+if (isIOS) {
+  banner.classList.add('show');
+  msg.textContent = 'iOS detected — use APKPure to sideload via alternative methods.';
+  document.getElementById('btn-direct').style.display = 'none';
+} else if (isAndroid) {
+  banner.classList.add('show');
+  msg.textContent = 'Android detected — direct download available.';
+} else {
+  banner.classList.add('show');
+  msg.textContent = 'Desktop detected — download and transfer to your Android device.';
+}
+
+// Loader hide
 window.addEventListener('load', () => {
   setTimeout(() => {
     document.getElementById('loader').classList.add('hide');
-  }, 900);
+    document.getElementById('page').classList.add('visible');
+  }, 600);
 });
-
-function formatBytes(bytes) {
-  if (!bytes) return 'Unknown';
-  const sizes = ['B','KB','MB','GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
-}
-
-function formatNum(n) {
-  if (!n) return '0';
-  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
-  return n.toString();
-}
-
-function parseChangelog(input) {
-  if (!input) return '';
-  const lines = input.split('\n');
-  let html = '';
-  lines.forEach(line => {
-    const t = line.trim();
-    if (!t) { html += '<br>'; return; }
-    if (t.startsWith('<img')) {
-      html += t; return;
-    }
-    if (t.startsWith('## ') || (t.startsWith('**') && t.endsWith('**'))) {
-      const text = t.replace(/^##\s*/, '').replace(/\*\*/g, '');
-      html += `<div class="bold">📌 ${text}</div>`;
-    } else if (t.startsWith('- ') || t.startsWith('* ')) {
-      html += `<div class="text">· ${t.slice(2)}</div>`;
-    } else {
-      html += `<div class="text">${t}</div>`;
-    }
-  });
-  return html;
-}
-
-function extractImages(changelog) {
-  if (!changelog) return [];
-  const imgs = [];
-  const imgRe = /<img[^>]+src="([^"]+)"[^>]*>/gi;
-  let m;
-  while ((m = imgRe.exec(changelog)) !== null) imgs.push(m[1]);
-  return imgs;
-}
-
-async function loadRelease() {
-  try {
-    const r = await fetch('/api/release');
-    const d = await r.json();
-    if (d.error) throw new Error('API error');
-
-    document.getElementById('ver-pill').textContent = d.version || 'v—';
-    document.getElementById('info-version').textContent = d.version || '—';
-    document.getElementById('info-size').textContent = formatBytes(d.size);
-    document.getElementById('info-dl').textContent = formatNum(d.downloads) + '+';
-
-    // Screenshots from changelog
-    const imgs = extractImages(d.changelog || '');
-    if (imgs.length) {
-      const card = document.getElementById('screenshots-card');
-      const inner = document.getElementById('screenshots-inner');
-      imgs.forEach(src => {
-        const img = document.createElement('img');
-        img.src = src; img.className = 'ss-img'; img.alt = 'Screenshot';
-        inner.appendChild(img);
-      });
-      card.style.display = 'block';
-    }
-
-    // Changelog
-    const cleanlog = (d.changelog || '').replace(/<img[^>]+>/gi, '').trim();
-    if (cleanlog) {
-      document.getElementById('changelog-body').innerHTML = parseChangelog(cleanlog);
-      document.getElementById('changelog-card').style.display = 'block';
-    }
-  } catch(e) {
-    document.getElementById('info-version').textContent = 'N/A';
-    document.getElementById('info-size').textContent = 'N/A';
-    document.getElementById('info-dl').textContent = 'N/A';
-  }
-}
-
-loadRelease();
 </script>
+
+<script src="/app.js"></script>
 </body>
 </html>
