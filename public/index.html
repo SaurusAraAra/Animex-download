@@ -4,734 +4,230 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Animex APK</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap');
-
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    background: #0a0a0f;
-    color: #fff;
-    font-family: 'Inter', system-ui, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
-  }
-
-  /* ══════════ LOADING SCREEN ══════════ */
-  .loader-overlay {
-    position: fixed;
-    inset: 0;
-    background: #0a0a0f;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
-  }
-
-  .loader-overlay.hidden {
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  .loader-ring {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    border: 4px solid transparent;    border-top-color: #ff3c3c;
-    border-right-color: #ff3c3c;
-    animation: spin 1s linear infinite;
-    position: relative;
-  }
-
-  .loader-ring::before {
-    content: '';
-    position: absolute;
-    inset: 6px;
-    border-radius: 50%;
-    border: 4px solid transparent;
-    border-top-color: #ff8c00;
-    animation: spin 0.6s linear reverse infinite;
-  }
-
-  .loader-ring::after {
-    content: '';
-    position: absolute;
-    inset: 16px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    border-top-color: #ff3c3c;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  .loader-text {
-    margin-top: 24px;
-    font-size: 14px;
-    color: #888;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    animation: pulse-text 1.5s ease-in-out infinite;
-  }
-
-  .loader-progress {
-    width: 200px;
-    height: 3px;
-    background: #1a1a2e;
-    border-radius: 10px;
-    margin-top: 16px;
-    overflow: hidden;
-  }
-
-  .loader-progress-bar {
-    height: 100%;    width: 0%;
-    background: linear-gradient(90deg, #ff3c3c, #ff8c00);
-    border-radius: 10px;
-    animation: progress-fill 2s ease-in-out forwards;
-  }
-
-  @keyframes progress-fill {
-    0%   { width: 0%; }
-    30%  { width: 40%; }
-    60%  { width: 70%; }
-    90%  { width: 90%; }
-    100% { width: 100%; }
-  }
-
-  @keyframes pulse-text {
-    0%, 100% { opacity: 0.5; }
-    50%      { opacity: 1; }
-  }
-
-  /* ══════════ ANIMATED BACKGROUND ══════════ */
-  .bg-gradient {
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 600px 400px at 20% 30%, rgba(255, 60, 60, 0.08), transparent),
-      radial-gradient(ellipse 500px 500px at 80% 70%, rgba(255, 140, 0, 0.06), transparent),
-      radial-gradient(ellipse 400px 300px at 50% 50%, rgba(120, 0, 255, 0.05), transparent);
-    animation: bg-shift 8s ease-in-out infinite alternate;
-    z-index: 0;
-  }
-
-  @keyframes bg-shift {
-    0%   { filter: hue-rotate(0deg); }
-    100% { filter: hue-rotate(30deg); }
-  }
-
-  /* Floating particles */
-  .particles {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
-  }
-
-  .particle {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background: rgba(255, 60, 60, 0.4);
-    border-radius: 50%;    animation: float-up linear infinite;
-  }
-
-  .particle:nth-child(odd) {
-    background: rgba(255, 140, 0, 0.3);
-  }
-
-  .particle:nth-child(3n) {
-    background: rgba(255, 255, 255, 0.15);
-    width: 2px;
-    height: 2px;
-  }
-
-  @keyframes float-up {
-    0%   { transform: translateY(100vh) scale(0); opacity: 0; }
-    10%  { opacity: 1; }
-    90%  { opacity: 1; }
-    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
-  }
-
-  /* Grid lines */
-  .grid-bg {
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-    background-size: 60px 60px;
-    z-index: 0;
-  }
-
-  /* ══════════ MAIN CONTAINER ══════════ */
-  .container {
-    position: relative;
-    z-index: 1;
-    width: 400px;
-    max-width: 92vw;
-    background: linear-gradient(165deg, #151520 0%, #0f0f18 100%);
-    padding: 28px 24px;
-    border-radius: 20px;
-    box-shadow:
-      0 20px 60px rgba(0,0,0,0.7),
-      0 0 0 1px rgba(255,255,255,0.05),
-      inset 0 1px 0 rgba(255,255,255,0.05);
-    opacity: 0;
-    transform: translateY(40px) scale(0.95);
-    animation: container-enter 0.8s ease 2.2s forwards;
-    border: 1px solid rgba(255, 60, 60, 0.1);
-  }
-  @keyframes container-enter {
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  /* Glow border animation */
-  .container::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: 20px;
-    padding: 1px;
-    background: linear-gradient(
-      135deg,
-      transparent 30%,
-      rgba(255, 60, 60, 0.3) 50%,
-      transparent 70%
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: border-glow 3s ease-in-out infinite alternate;
-    pointer-events: none;
-  }
-
-  @keyframes border-glow {
-    0%   { opacity: 0.5; }
-    100% { opacity: 1; }
-  }
-
-  /* ══════════ HEADER / LOGO ══════════ */
-  .logo-section {
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-  }
-
-  .logo-icon {
-    width: 64px;
-    height: 64px;
-    background: linear-gradient(135deg, #ff3c3c, #ff8c00);
-    border-radius: 16px;
-    margin: 0 auto 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;    font-weight: 900;
-    color: #fff;
-    box-shadow: 0 8px 25px rgba(255, 60, 60, 0.3);
-    animation: logo-float 3s ease-in-out infinite;
-    position: relative;
-  }
-
-  .logo-icon::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, #ff3c3c, #ff8c00);
-    opacity: 0.3;
-    filter: blur(12px);
-    z-index: -1;
-    animation: logo-float 3s ease-in-out infinite;
-  }
-
-  @keyframes logo-float {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-6px); }
-  }
-
-  h1 {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: 6px;
-    background: linear-gradient(90deg, #fff, #ff8c00, #ff3c3c);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    background-size: 200% auto;
-    animation: gradient-text 3s linear infinite;
-  }
-
-  @keyframes gradient-text {
-    to { background-position: 200% center; }
-  }
-
-  .subtitle {
-    font-size: 11px;
-    color: #666;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-
-  /* ══════════ INFO CARDS ══════════ */  .info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin: 18px 0;
-  }
-
-  .info-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 12px;
-    padding: 14px;
-    text-align: center;
-    transition: all 0.3s ease;
-    opacity: 0;
-    animation: card-enter 0.5s ease forwards;
-  }
-
-  .info-card:nth-child(1) { animation-delay: 2.4s; }
-  .info-card:nth-child(2) { animation-delay: 2.55s; }
-  .info-card:nth-child(3) { animation-delay: 2.7s; }
-  .info-card:nth-child(4) { animation-delay: 2.85s; }
-
-  @keyframes card-enter {
-    from { opacity: 0; transform: translateY(15px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .info-card:hover {
-    background: rgba(255, 60, 60, 0.06);
-    border-color: rgba(255, 60, 60, 0.15);
-    transform: translateY(-2px);
-  }
-
-  .info-label {
-    font-size: 10px;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 6px;
-  }
-
-  .info-value {
-    font-size: 16px;
-    font-weight: 700;
-    color: #ff3c3c;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .info-card.highlight .info-value {    color: #ff8c00;
-  }
-
-  /* ══════════ DESCRIPTION ══════════ */
-  .desc {
-    margin-top: 16px;
-  }
-
-  .desc img {
-    width: 100%;
-    height: auto;
-    max-height: 400px;
-    object-fit: contain;
-    border-radius: 12px;
-    margin: 10px 0;
-    display: block;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    transition: transform 0.4s ease;
-    opacity: 0;
-    animation: card-enter 0.5s ease 3s forwards;
-  }
-
-  .desc img:hover {
-    transform: scale(1.02);
-  }
-
-  /* ══════════ FEATURES LIST ══════════ */
-  .features {
-    margin: 18px 0;
-    opacity: 0;
-    animation: card-enter 0.5s ease 3.1s forwards;
-  }
-
-  .features-title {
-    font-size: 12px;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-  }
-
-  .feature-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    font-size: 13px;
-    color: #bbb;
-  }
-  .feature-item:last-child {
-    border-bottom: none;
-  }
-
-  .feature-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #ff3c3c;
-    box-shadow: 0 0 8px rgba(255, 60, 60, 0.5);
-    flex-shrink: 0;
-  }
-
-  .feature-dot.green {
-    background: #00e676;
-    box-shadow: 0 0 8px rgba(0, 230, 118, 0.5);
-  }
-
-  .feature-dot.blue {
-    background: #448aff;
-    box-shadow: 0 0 8px rgba(68, 138, 255, 0.5);
-  }
-
-  /* ══════════ SKELETON LOADING ══════════ */
-  .skeleton {
-    background: linear-gradient(90deg, #1a1a2e 25%, #222240 50%, #1a1a2e 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 6px;
-  }
-
-  @keyframes shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-
-  .skeleton-text {
-    height: 14px;
-    margin: 6px 0;
-  }
-
-  .skeleton-text.w60 { width: 60%; }
-  .skeleton-text.w80 { width: 80%; }
-  .skeleton-text.w40 { width: 40%; }
-
-  /* ══════════ DOWNLOAD BUTTON ══════════ */
-  .btn-wrapper {
-    margin-top: 20px;
-    position: relative;    opacity: 0;
-    animation: card-enter 0.5s ease 3.3s forwards;
-  }
-
-  .btn {
-    display: block;
-    padding: 16px;
-    text-align: center;
-    background: linear-gradient(135deg, #ff3c3c, #ff6b3c);
-    border-radius: 12px;
-    text-decoration: none;
-    color: #fff;
-    font-weight: 800;
-    font-size: 15px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 25px rgba(255, 60, 60, 0.3);
-    cursor: pointer;
-  }
-
-  .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 35px rgba(255, 60, 60, 0.45);
-  }
-
-  .btn:active {
-    transform: translateY(0) scale(0.98);
-  }
-
-  /* Button shine effect */
-  .btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255,255,255,0.2),
-      transparent
-    );
-    animation: btn-shine 2.5s ease-in-out infinite;
-  }
-
-  @keyframes btn-shine {    0%   { left: -100%; }
-    50%  { left: 100%; }
-    100% { left: 100%; }
-  }
-
-  /* Pulse ring on button */
-  .btn-wrapper::before,
-  .btn-wrapper::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 12px;
-    border: 2px solid rgba(255, 60, 60, 0.4);
-    animation: pulse-ring 2s ease-out infinite;
-    pointer-events: none;
-  }
-
-  .btn-wrapper::after {
-    animation-delay: 0.5s;
-  }
-
-  @keyframes pulse-ring {
-    0%   { transform: scale(1); opacity: 0.6; }
-    100% { transform: scale(1.08); opacity: 0; }
-  }
-
-  .btn-icon {
-    display: inline-block;
-    margin-right: 6px;
-    animation: bounce-down 1.5s ease-in-out infinite;
-  }
-
-  @keyframes bounce-down {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(3px); }
-  }
-
-  /* ══════════ STATUS BAR ══════════ */
-  .status-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    margin-top: 14px;
-    font-size: 11px;
-    color: #555;
-    opacity: 0;
-    animation: card-enter 0.5s ease 3.5s forwards;
-  }
-  .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #00e676;
-    box-shadow: 0 0 6px rgba(0, 230, 118, 0.6);
-    animation: blink 2s ease-in-out infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.3; }
-  }
-
-  /* ══════════ FOOTER ══════════ */
-  .footer {
-    text-align: center;
-    margin-top: 16px;
-    font-size: 10px;
-    color: #333;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    opacity: 0;
-    animation: card-enter 0.5s ease 3.6s forwards;
-  }
-
-  /* ══════════ TOOLTIP ══════════ */
-  .version-tooltip {
-    display: inline-block;
-    background: rgba(255, 60, 60, 0.15);
-    color: #ff3c3c;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-weight: 600;
-    margin-left: 6px;
-    animation: pop-in 0.3s ease 3.2s both;
-  }
-
-  @keyframes pop-in {
-    from { transform: scale(0); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
-  }
-
-  /* ══════════ SCROLLBAR ══════════ */
-  ::-webkit-scrollbar {
-    width: 4px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;  }
-  ::-webkit-scrollbar-thumb {
-    background: rgba(255, 60, 60, 0.3);
-    border-radius: 10px;
-  }
+/* ══════════ RESET & BASE ══════════ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: #050505;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Background Animation (Glowing Orbs) */
+body::before, body::after {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: -1;
+  opacity: 0.4;
+  animation: floatOrb 10s infinite alternate;
+}
+body::before { background: #ff3c3c; top: -50px; left: -50px; }
+body::after { background: #6a00ff; bottom: -50px; right: -50px; animation-delay: -5s; }
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(30px, 50px); }
+}
+
+/* ══════════ LOADING SCREEN ══════════ */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: #050505;
+  z-index: 9999;  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.5s ease;
+}
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 60, 60, 0.2);
+  border-left-color: #ff3c3c;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* ══════════ MAIN CARD ══════════ */
+.container {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(20, 20, 25, 0.85); /* Glass effect */
+  backdrop-filter: blur(10px);
+  padding: 30px 25px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 20px 50px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(255, 60, 60, 0.1); /* Subtle red border glow */
+  transform: translateY(20px);
+  opacity: 0;
+  animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: 0.5s; /* Wait for loader */
+}
+
+@keyframes slideUp {
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Header */
+h1 {
+  text-align: center;
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+  background: linear-gradient(to right, #fff, #ff3c3c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+}
+/* Info Rows (Version/Size) */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: 0.3s;
+}
+.row:hover {
+  background: rgba(255, 60, 60, 0.05);
+  border-color: rgba(255, 60, 60, 0.2);
+}
+.row span:first-child {
+  color: #aaa;
+  font-size: 14px;
+  font-weight: 500;
+}
+.row span:last-child {
+  color: #fff;
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+/* Description Area */
+.desc {
+  margin-top: 20px;
+  text-align: center;
+}
+.desc img {
+  width: 100%;
+  height: auto;
+  max-height: 350px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin: 10px 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: transform 0.3s ease;
+}
+.desc img:hover {
+  transform: scale(1.02);
+}
+
+/* ══════════ BUTTON ══════════ */.btn {
+  display: block;
+  margin-top: 25px;
+  padding: 16px;
+  text-align: center;
+  background: linear-gradient(135deg, #ff3c3c, #d60000);
+  border-radius: 16px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 1px;
+  box-shadow: 0 10px 25px rgba(255, 60, 60, 0.4);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(255, 60, 60, 0.6);
+}
+
+/* Shine Effect on Button */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: 0.5s;
+}
+.btn:hover::before {
+  left: 100%;
+}
+
+/* ══════════ UTILS ══════════ */
+.hidden-loader {
+  opacity: 0;
+  pointer-events: none;
+}
 </style>
 </head>
 
 <body>
 
-<!-- LOADING SCREEN -->
-<div class="loader-overlay" id="loader">
-  <div class="loader-ring"></div>
-  <div class="loader-text">Loading</div>
-  <div class="loader-progress">
-    <div class="loader-progress-bar"></div>
-  </div>
+<!-- Loading Screen -->
+<div id="loader">
+  <div class="spinner"></div>
 </div>
-
-<!-- ANIMATED BACKGROUND -->
-<div class="bg-gradient"></div>
-<div class="grid-bg"></div>
-<div class="particles" id="particles"></div>
-
-<!-- MAIN CONTAINER -->
 <div class="container">
+  <h1>ANIMEX</h1>
 
-  <!-- LOGO -->
-  <div class="logo-section">
-    <div class="logo-icon">A</div>
-    <h1>ANIMEX</h1>
-    <div class="subtitle">Anime Streaming Platform</div>
+  <!-- Info Rows -->
+  <div class="row">
+    <span>Version</span>
+    <span id="version">Loading...</span>
   </div>
 
-  <!-- INFO GRID -->
-  <div class="info-grid">
-    <div class="info-card">
-      <div class="info-label">Version</div>
-      <div class="info-value" id="version">—</div>
-    </div>
-    <div class="info-card highlight">
-      <div class="info-label">Size</div>
-      <div class="info-value" id="size">—</div>
-    </div>
-    <div class="info-card">
-      <div class="info-label">Updated</div>
-      <div class="info-value" id="updated">—</div>
-    </div>
-    <div class="info-card highlight">
-      <div class="info-label">Downloads</div>      <div class="info-value" id="downloads">—</div>
-    </div>
+  <div class="row">
+    <span>File Size</span>
+    <span id="size">Loading...</span>
   </div>
 
-  <!-- DESCRIPTION -->
+  <!-- Image Container -->
   <div id="desc" class="desc"></div>
 
-  <!-- FEATURES -->
-  <div class="features">
-    <div class="features-title">✦ Fitur Unggulan</div>
-    <div class="feature-item">
-      <span class="feature-dot"></span>
-      Nonton Anime Sub Indo Gratis
-    </div>
-    <div class="feature-item">
-      <span class="feature-dot green"></span>
-      Kualitas HD & Full HD
-    </div>
-    <div class="feature-item">
-      <span class="feature-dot blue"></span>
-      Update Episode Terbaru
-    </div>
-    <div class="feature-item">
-      <span class="feature-dot"></span>
-      Tanpa Iklan Mengganggu
-    </div>
-    <div class="feature-item">
-      <span class="feature-dot green"></span>
-      Download & Tonton Offline
-    </div>
-  </div>
-
-  <!-- DOWNLOAD BUTTON -->
-  <div class="btn-wrapper">
-    <a href="/api/download" class="btn">
-      <span class="btn-icon">⬇</span> Download APK
-    </a>
-  </div>
-
-  <!-- STATUS -->
-  <div class="status-bar">
-    <span class="status-dot"></span>
-    Server Online — Aman & Terpercaya
-  </div>
-
-  <!-- FOOTER -->
-  <div class="footer">© 2026 Animex Project</div>
+  <!-- Download Button -->
+  <a href="/api/download" class="btn">DOWNLOAD APK</a>
 </div>
 
-<script>// ══════════ PARTICLES ══════════
-(function createParticles() {
-  const container = document.getElementById('particles');
-  for (let i = 0; i < 30; i++) {
-    const p = document.createElement('div');
-    p.classList.add('particle');
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDuration = (6 + Math.random() * 10) + 's';
-    p.style.animationDelay = (Math.random() * 8) + 's';
-    p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
-    container.appendChild(p);
-  }
-})();
-
-// ══════════ LOADING SCREEN ══════════
+<script>
+// Script sederhana untuk menghilangkan loading screen setelah halaman siap
 window.addEventListener('load', () => {
+  const loader = document.getElementById('loader');
   setTimeout(() => {
-    document.getElementById('loader').classList.add('hidden');
-  }, 2200);
+    loader.classList.add('hidden-loader');
+  }, 800); // Delay sedikit biar smooth
 });
+</script>
 
-// ══════════ FETCH APP DATA ══════════
-(async function fetchData() {
-  const versionEl  = document.getElementById('version');
-  const sizeEl     = document.getElementById('size');
-  const updatedEl  = document.getElementById('updated');
-  const downloadsEl = document.getElementById('downloads');
-  const descEl     = document.getElementById('desc');
+<!-- Tetap memuat app.js eksternal sesuai permintaan -->
+<script src="app.js"></script>
 
-  try {
-    const res = await fetch('/api/info');
-    const data = await res.json();
-
-    versionEl.textContent = data.version;
-    sizeEl.textContent    = data.size;
-    updatedEl.textContent = data.updated || '2026';
-    downloadsEl.textContent = data.downloads || '50K+';
-
-    if (data.desc) {
-      descEl.innerHTML = `<img src="${data.desc}" alt="Preview" loading="lazy">`;
-    }
-  } catch {
-    // Fallback / skeleton
-    versionEl.innerHTML = '2.1.0 <span class="version-tooltip">NEW</span>';
-    sizeEl.textContent    = '45 MB';
-    updatedEl.textContent = 'Apr 2026';
-    downloadsEl.textContent = '120K+';
-  }
-})();
-</script></body>
+</body>
 </html>
