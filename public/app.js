@@ -7,14 +7,11 @@ function formatBytes(bytes) {
 
 function parseDesc(input) {
   if (!input) return ""
-
   const lines = input.split("\n")
   let html = ""
-
   lines.forEach(line => {
     const t = line.trim()
     if (!t) return
-
     if (t.startsWith("<img")) {
       html += t
     } else if (t.startsWith("**") && t.endsWith("**")) {
@@ -24,18 +21,36 @@ function parseDesc(input) {
       html += `<div class="text">${t}</div>`
     }
   })
-
   return html
 }
 
 async function load() {
-  const r = await fetch("/api/release")
-  const d = await r.json()
+  try {
+    const r = await fetch("/api/release")
+    const d = await r.json()
 
-  document.getElementById("version").innerText = d.version
-  document.getElementById("size").innerText = formatBytes(d.size)
+    document.getElementById("version").innerText = d.version || "—"
+    document.getElementById("size").innerText = formatBytes(d.size)
 
-  document.getElementById("desc").innerHTML = parseDesc(d.changelog)
+    // Update label
+    const label = document.getElementById("update-label")
+    if (label) label.textContent = "Latest Release · " + (d.version || "")
+
+    const descEl = document.getElementById("desc")
+    const descCard = document.getElementById("desc-card")
+    const parsed = parseDesc(d.changelog)
+    if (parsed && descEl) {
+      descEl.innerHTML = parsed
+      if (descCard) descCard.style.display = "block"
+    }
+  } catch(e) {
+    const v = document.getElementById("version")
+    const s = document.getElementById("size")
+    if (v) v.innerText = "—"
+    if (s) s.innerText = "—"
+    const label = document.getElementById("update-label")
+    if (label) label.textContent = "Latest Release"
+  }
 }
 
 load()
